@@ -1,10 +1,8 @@
 package com.spring.springboot.cruddemo.rest;
 
-import com.spring.springboot.cruddemo.dao.EmployeeDAO;
 import com.spring.springboot.cruddemo.entity.Employee;
 import com.spring.springboot.cruddemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,16 +11,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-
-    // dirty solution and is not necessary when we have a service layer
-    // private EmployeeDAO employeeDAO;
-
     private EmployeeService employeeService;
-
-    // quick and dirty: inject employee dao (use constructor injection)
-    // public EmployeeRestController(EmployeeDAO theEmployeeDAO) {
-    //  employeeDAO = theEmployeeDAO;
-    //  }
 
     @Autowired
     public EmployeeRestController(EmployeeService theEmployeeService) {
@@ -30,18 +19,16 @@ public class EmployeeRestController {
     }
 
     // expose "/employees" and return a list of employees
-    //@GetMapping("/employees")
-    //public List<Employee> findAll() {
-    //    return employeeDAO.findAll();
-    //}
-
     @GetMapping("/employees")
     public List<Employee> findAll() {
         return employeeService.findAll();
     }
 
+    // add mapping for GET /employees/{employeeId}
+
     @GetMapping("/employees/{employeeId}")
     public Employee getEmployee(@PathVariable int employeeId) {
+
         Employee theEmployee = employeeService.findById(employeeId);
 
         if (theEmployee == null) {
@@ -52,6 +39,7 @@ public class EmployeeRestController {
     }
 
     // add mapping for POST /employees - add new employee
+
     @PostMapping("/employees")
     public Employee addEmployee(@RequestBody Employee theEmployee) {
 
@@ -59,25 +47,31 @@ public class EmployeeRestController {
         // this is to force a save of new item ... instead of update
 
         theEmployee.setId(0);
+
         Employee dbEmployee = employeeService.save(theEmployee);
 
         return dbEmployee;
     }
 
     // add mapping for PUT /employees - update existing employee
+
     @PutMapping("/employees")
     public Employee updateEmployee(@RequestBody Employee theEmployee) {
+
         Employee dbEmployee = employeeService.save(theEmployee);
 
         return dbEmployee;
     }
 
-    // delete mapping for DELETE /employees/{employeeId} - delete employee
+    // add mapping for DELETE /employees/{employeeId} - delete employee
+
     @DeleteMapping("/employees/{employeeId}")
     public String deleteEmployee(@PathVariable int employeeId) {
+
         Employee tempEmployee = employeeService.findById(employeeId);
 
         // throw exception if null
+
         if (tempEmployee == null) {
             throw new RuntimeException("Employee id not found - " + employeeId);
         }
@@ -85,7 +79,20 @@ public class EmployeeRestController {
         employeeService.deleteById(employeeId);
 
         return "Deleted employee id - " + employeeId;
-
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
