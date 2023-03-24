@@ -1,2 +1,1 @@
-# spring-boot
-spring-boot-basic
+# spring-boot-study
